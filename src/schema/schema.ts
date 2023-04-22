@@ -11,7 +11,7 @@ export const typeDefs = gql`
     id: ID!
     content: String!
     user: User!
-    chatRoomId: ID!
+    chatRoom: ChatRoom!
   }
 
   type ChatRoom {
