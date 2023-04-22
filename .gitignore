@@ -1,0 +1,17 @@
+node_modules/
+build/
+dist/
+.idea/
+
+frontend/node_modules/
+frontend/build/
+frontend/dist/
+frontend/.idea/
+frontend/.DS_Store
+
+# Logs
+logs
+*.log
+
+.DS_Store
+.DS_Store
