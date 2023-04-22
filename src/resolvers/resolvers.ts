@@ -12,8 +12,8 @@ const messages: Message[] = [];
 
 export const resolvers = {
     Query: {
-        messages: (_parent: unknown, {chatRoomId}: { chatRoomId: string }) => messages.filter((m) => m.chatRoomId === chatRoomId),
-        chatRooms: () => chatRooms,
+        messages: (_parent: unknown, {chatRoomId}: { chatRoomId: string }) =>
+            messages.filter((m) => m.chatRoomId === chatRoomId), chatRooms: () => chatRooms,
     },
     Mutation: {
         createMessage: (

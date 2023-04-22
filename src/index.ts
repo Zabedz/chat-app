@@ -1,54 +1,19 @@
 // src/index.ts
-import express from "express";
-import {ApolloServer} from "apollo-server-express";
-import {createServer} from "http";
-import {typeDefs} from "./schema/schema";
-import {resolvers} from "./resolvers/resolvers";
-import {execute, subscribe} from "graphql";
-import {ApolloServerPluginLandingPageGraphQLPlayground} from 'apollo-server-core';
-import { makeExecutableSchema } from '@graphql-tools/schema';
+import { ApolloServer } from "@apollo/server";
+import { startStandaloneServer } from "@apollo/server/standalone";
+import { typeDefs } from "./schema/schema";
+import { resolvers } from "./resolvers/resolvers";
 
-
-import {SubscriptionServer} from "subscriptions-transport-ws";
-
-const app = express();
-
-const schema = makeExecutableSchema({
+const server = new ApolloServer({
     typeDefs,
     resolvers,
 });
 
-const server = new ApolloServer({
-    schema,
-    context: ({ req, res }) => ({ req, res }),
-    plugins: [
-        ApolloServerPluginLandingPageGraphQLPlayground({
-            settings: {
-                "request.credentials": "include",
-            },
-        }),
-    ],
-});
+const main = async () => {
+    const { url } = await startStandaloneServer(server);
+    console.log(`🚀 Server ready at ${url}`);
+};
 
-server.applyMiddleware({app});
-
-const httpServer = createServer(app);
-
-SubscriptionServer.create(
-    {
-        schema,
-        execute,
-        subscribe,
-    },
-    {
-        server: httpServer,
-        path: server.graphqlPath,
-    }
-);
-
-const PORT = process.env.PORT || 4000;
-
-httpServer.listen(PORT, () => {
-    console.log(`Server is running at http://localhost:${PORT}${server.graphqlPath}`);
-    console.log(`Subscriptions ready at ws://localhost:${PORT}${server.graphqlPath}`);
+main().catch((error) => {
+    console.error("Error starting server:", error);
 });

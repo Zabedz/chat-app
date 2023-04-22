@@ -1,5 +1,5 @@
 // src/schema/schema.ts
-import { gql } from "apollo-server-express";
+import gql from 'graphql-tag';
 
 export const typeDefs = gql`
   type User {
