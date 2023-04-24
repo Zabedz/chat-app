@@ -2,15 +2,19 @@ import { ApolloServer } from '@apollo/server';
 import { ApolloServerPluginDrainHttpServer } from '@apollo/server/plugin/drainHttpServer';
 import { expressMiddleware } from '@apollo/server/express4';
 import express from 'express';
-import http from 'http';
+import { createServer } from 'http';
 import cors from 'cors';
 import bodyParser from 'body-parser';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
+import { makeExecutableSchema } from '@graphql-tools/schema';
+import { WebSocketServer } from 'ws';
+import { useServer } from 'graphql-ws/lib/use/ws';
 
 import { typeDefs } from './schema/schema';
 import { resolvers } from './resolvers/resolvers';
 
+// MongoDB initialization
 dotenv.config();
 const MONGODB_URI: string = process.env.MONGO_DB_URL as string;
 
@@ -26,13 +30,26 @@ mongoose
   .then(() => console.log('Connected to MongoDB'))
   .catch((err) => console.error('Error connecting to MongoDB:', err));
 
+// Server initialization
 const app = express();
-const httpServer = http.createServer(app);
+const httpServer = createServer(app);
+const schema = makeExecutableSchema({ typeDefs, resolvers });
+let serverCleanup: ReturnType<typeof useServer>;
 
 const server = new ApolloServer({
-  typeDefs,
-  resolvers,
-  plugins: [ApolloServerPluginDrainHttpServer({ httpServer })],
+  schema,
+  plugins: [
+    ApolloServerPluginDrainHttpServer({ httpServer }),
+    {
+      async serverWillStart() {
+        return {
+          async drainServer() {
+            await serverCleanup.dispose();
+          },
+        };
+      },
+    },
+  ],
 });
 
 const main = async () => {
@@ -45,12 +62,24 @@ const main = async () => {
     expressMiddleware(server)
   );
 
+  const wsServer = new WebSocketServer({
+    server: httpServer,
+    path: '/graphql',
+  });
+
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  serverCleanup = useServer({ schema }, wsServer);
+
   await new Promise<void>((resolve) =>
-    httpServer.listen({ port: 4000 }, resolve)
+    httpServer.listen({ port: process.env.PORT || 4000 }, () => {
+      console.log(
+        `🚀 Server ready at http://localhost:${
+          process.env.PORT || 4000
+        }/graphql`
+      );
+      resolve();
+    })
   );
-  console.log(`🚀 Server ready at http://localhost:4000/`);
 };
 
-main().catch((error) => {
-  console.error('Error starting server:', error);
-});
+main();

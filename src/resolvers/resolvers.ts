@@ -12,7 +12,7 @@ export const resolvers = {
   Query: {
     messages: async (
       _parent: unknown,
-      { chatRoomId }: { chatRoomId: string },
+      { chatRoomId }: { chatRoomId: string }
     ) => {
       console.log('Getting messages for chat room: ', chatRoomId);
       return Message.find({ chatRoomId });
@@ -23,7 +23,7 @@ export const resolvers = {
     },
     loginUser: async (
       _parent: unknown,
-      { username, password }: { username: string; password: string },
+      { username, password }: { username: string; password: string }
     ): Promise<IUser> => {
       console.log('Logging in with: ', username, password);
       const user: IUser | null = await User.findOne({ username });
@@ -47,7 +47,7 @@ export const resolvers = {
         content,
         userId,
         chatRoomId,
-      }: { content: string; userId: string; chatRoomId: string },
+      }: { content: string; userId: string; chatRoomId: string }
     ) => {
       const message = new Message({ content, userId, chatRoomId });
       await message.save();
@@ -61,7 +61,7 @@ export const resolvers = {
     },
     createUser: async (
       _parent: unknown,
-      { username, password }: { username: string; password: string },
+      { username, password }: { username: string; password: string }
     ) => {
       const hashedPassword = await bcrypt.hash(password, 10);
       const user = new User({ username: username, password: hashedPassword });
