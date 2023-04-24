@@ -1,7 +1,6 @@
 {
   "watch": ["src"],
-  "ext": "ts,tsx,js,json",
-  "execMap": {
-    "ts": "node -r ts-node/register"
-  }
+  "ext": "ts, tsx, json",
+  "ignore": ["src/**/*.spec.ts"],
+  "exec": "npm run start"
 }
