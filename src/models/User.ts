@@ -1,20 +1,26 @@
-import { Schema, model, Document } from "mongoose";
+import { Schema, model, Document } from 'mongoose';
 
 interface IUser extends Document {
-    username: string;
+  username: string;
+  password: string; // Add this line for the password field
 }
 
 const userSchema = new Schema<IUser>(
-    {
-        username: {
-            type: String,
-            required: true,
-        },
+  {
+    username: {
+      type: String,
+      required: true,
     },
-    {
-        timestamps: true,
-    }
+    password: {
+      type: String,
+      required: true,
+    },
+  },
+  {
+    timestamps: true,
+  }
 );
 
-const User = model<IUser>("User", userSchema);
+// noinspection TypeScriptValidateTypes
+const User = model<IUser>('User', userSchema);
 export default User;

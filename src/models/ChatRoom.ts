@@ -1,20 +1,21 @@
-import { Schema, model, Document } from "mongoose";
+import { Document, model, Schema } from 'mongoose';
 
 interface IChatRoom extends Document {
-    name: string;
+  name: string;
 }
 
 const chatRoomSchema = new Schema<IChatRoom>(
-    {
-        name: {
-            type: String,
-            required: true,
-        },
+  {
+    name: {
+      type: String,
+      required: true,
     },
-    {
-        timestamps: true,
-    }
+  },
+  {
+    timestamps: true,
+  }
 );
 
-const ChatRoom = model<IChatRoom>("ChatRoom", chatRoomSchema);
+// noinspection TypeScriptValidateTypes
+const ChatRoom = model<IChatRoom>('ChatRoom', chatRoomSchema);
 export default ChatRoom;

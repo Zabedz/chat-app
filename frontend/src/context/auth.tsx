@@ -3,9 +3,8 @@ import React, {createContext, useContext, useState} from "react";
 type AuthContextType = {
     isLoggedIn: boolean;
     setLoggedIn: (loggedIn: boolean) => void;
-    authenticated: boolean; // Add this line
+    authenticated: boolean;
 };
-
 
 export const AuthContext = createContext<AuthContextType>({
     authenticated: false,

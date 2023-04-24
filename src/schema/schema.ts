@@ -28,7 +28,7 @@ export const typeDefs = gql`
   type Mutation {
     createMessage(content: String!, userId: ID!, chatRoomId: ID!): Message!
     createChatRoom(name: String!): ChatRoom!
-    createUser(username: String!): User!
+    createUser(username: String!, password: String!): User!
   }
 
   type Subscription {

@@ -15,7 +15,7 @@ import { css } from "@emotion/react";
 
 const Login = () => {
     const navigate = useNavigate();
-    const [email, setEmail] = useState("");
+    const [userName, setUserName] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
 
@@ -63,12 +63,12 @@ const Login = () => {
                             </Box>
                         )}
                         <FormControl isRequired>
-                            <FormLabel>Email</FormLabel>
+                            <FormLabel>Username</FormLabel>
                             <Input
                                 type="email"
-                                placeholder="Enter your email"
-                                value={email}
-                                onChange={(e) => setEmail(e.target.value)}
+                                placeholder="Enter your username"
+                                value={userName}
+                                onChange={(e) => setUserName(e.target.value)}
                             />
                         </FormControl>
                         <FormControl isRequired>
@@ -82,6 +82,9 @@ const Login = () => {
                         </FormControl>
                         <Button variant="primary" type="submit">
                             Login
+                        </Button>
+                        <Button variant="outline" onClick={() => navigate("/register")}>
+                            New User? Sign Up Here
                         </Button>
                     </Stack>
                 </motion.form>
