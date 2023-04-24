@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Box,
   Text,
@@ -9,10 +9,17 @@ import {
   Flex,
 } from '@chakra-ui/react';
 import { MdSend } from 'react-icons/md';
+import { MESSAGE_SUBSCRIPTION } from './graphql/subscriptions';
+import { useSubscription } from '@apollo/client';
 
 type User = {
   id: number;
   username: string;
+};
+
+type Message = {
+  user: string;
+  content: string;
 };
 
 type ChatBoxProps = {
@@ -21,6 +28,15 @@ type ChatBoxProps = {
 };
 
 const ChatBox: React.FC<ChatBoxProps> = ({ user, onCloseChat }) => {
+  const { data, error } = useSubscription(MESSAGE_SUBSCRIPTION);
+  const [messages, setMessages] = useState<Message[]>([]);
+
+  useEffect(() => {
+    if (data) {
+      setMessages((prevMessages) => [...prevMessages, data.messageAdded]);
+    }
+  }, [data]);
+
   return (
     <Box
       flexGrow={2}
@@ -46,7 +62,11 @@ const ChatBox: React.FC<ChatBoxProps> = ({ user, onCloseChat }) => {
         flexGrow={1}
         overflowY="auto"
       >
-        {/* The chat messages will be rendered here */}
+        {messages.map((message, index) => (
+          <Text key={index}>
+            {message.user}: {message.content}
+          </Text>
+        ))}
       </VStack>
       <Flex padding="1rem" alignItems="center">
         <Input placeholder="Type your message here..." flexGrow={1} />
