@@ -30,15 +30,14 @@ const Login = () => {
 
       toast({
         title: 'Login successful',
-        description: 'You have successfully logged in. Redirecting...',
+        description: 'Logged in successfully',
         status: 'success',
         duration: 3000,
         isClosable: true,
       });
 
-      setTimeout(() => {
-        navigate('/'); // Navigate to the Home page
-      }, 3000);
+      navigate('/'); // Navigate to the Home page
+
     },
     onError: (err) => {
       setErrorMessage('Invalid username or password');

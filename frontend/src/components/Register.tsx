@@ -51,7 +51,7 @@ const Register = () => {
 
       toast({
         title: 'Registration successful',
-        description: 'You have successfully registered. Redirecting...',
+        description: 'Account registered successfully',
         status: 'success',
         duration: 3000,
         isClosable: true,
