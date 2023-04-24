@@ -1,18 +1,45 @@
-import React, { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/auth';
+import React, { useState } from 'react';
+import { Flex } from '@chakra-ui/react';
+import UserList from './UserList';
+import ChatBox from './ChatBox';
+
+type User = {
+  id: number;
+  username: string;
+};
+
+const users: User[] = [
+  // Dummy data for now
+  { id: 1, username: 'User 1' },
+  { id: 2, username: 'User 2' },
+  { id: 3, username: 'User 3' },
+];
 
 const Home: React.FC = () => {
-  const { authenticated } = useAuth();
-  const navigate = useNavigate();
+  const [selectedUser, setSelectedUser] = useState<User | null>(null);
 
-  useEffect(() => {
-    if (!authenticated) {
-      navigate('/login');
-    }
-  }, [authenticated, navigate]);
+  const handleUserSelection = (user: User) => {
+    setSelectedUser(user);
+  };
 
-  return <h1>Welcome to the Chat App!</h1>;
+  const handleCloseChat = () => {
+    setSelectedUser(null);
+  };
+
+  return (
+    <Flex
+      minHeight="100vh"
+      padding="2rem"
+      flexDirection="row"
+      justifyContent="flex-start"
+      alignItems="flex-start"
+    >
+      <UserList users={users} onUserSelect={handleUserSelection} />
+      {selectedUser && (
+        <ChatBox user={selectedUser} onCloseChat={handleCloseChat} />
+      )}
+    </Flex>
+  );
 };
 
 export default Home;
