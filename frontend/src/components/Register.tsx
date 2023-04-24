@@ -1,10 +1,11 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { Box, Button, FormControl, FormLabel, Heading, Input, Stack, useColorModeValue } from "@chakra-ui/react";
-import { motion } from "framer-motion";
-import { css } from "@emotion/react";
-import { useMutation } from "@apollo/client";
-import gql from "graphql-tag";
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { Box, Button, FormControl, FormLabel, Heading, Input, Stack, useColorModeValue } from '@chakra-ui/react';
+import { motion } from 'framer-motion';
+import { css } from '@emotion/react';
+import { useMutation } from '@apollo/client';
+import gql from 'graphql-tag';
+import { useToast } from "@chakra-ui/react";
 
 const CREATE_USER = gql`
   mutation CreateUser($username: String!, $password: String!) {
@@ -17,9 +18,10 @@ const CREATE_USER = gql`
 
 const Register = () => {
   const navigate = useNavigate();
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
+  const toast = useToast();
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
 
   const [createUser] = useMutation(CREATE_USER);
 
@@ -33,24 +35,35 @@ const Register = () => {
           password
         }
       });
-      navigate("/");
+
+      toast({
+        title: "Registration successful",
+        description: "You have successfully registered. Redirecting...",
+        status: "success",
+        duration: 5000,
+        isClosable: true,
+      });
+
+      setTimeout(() => {
+        navigate("/");
+      }, 5000);
     } catch (err) {
-      setError("Error creating user");
+      setError('Error creating user');
     }
   };
 
   return (
     <Box
-      backgroundColor={useColorModeValue("gray.100", "gray.900")}
-      h="100vh"
-      display="flex"
-      alignItems="center"
-      justifyContent="center"
+      backgroundColor={useColorModeValue('gray.100', 'gray.900')}
+      h='100vh'
+      display='flex'
+      alignItems='center'
+      justifyContent='center'
     >
       <Box
         css={css`
           width: 400px;
-          background-color: ${useColorModeValue("white", "gray.700")};
+          background-color: ${useColorModeValue('white', 'gray.700')};
           padding: 2rem;
           border-radius: 0.5rem;
           box-shadow: 0 0 1rem rgba(0, 0, 0, 0.1);
@@ -63,19 +76,19 @@ const Register = () => {
           onSubmit={handleSubmit}
         >
           <Stack spacing={4}>
-            <Heading textAlign="center" size="lg">
+            <Heading textAlign='center' size='lg'>
               Register
             </Heading>
             {error && (
-              <Box color="red.500" textAlign="center">
+              <Box color='red.500' textAlign='center'>
                 {error}
               </Box>
             )}
             <FormControl isRequired>
               <FormLabel>Username</FormLabel>
               <Input
-                type="text"
-                placeholder="Enter your username"
+                type='text'
+                placeholder='Enter new username'
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
               />
@@ -83,16 +96,16 @@ const Register = () => {
             <FormControl isRequired>
               <FormLabel>Password</FormLabel>
               <Input
-                type="password"
-                placeholder="Enter your password"
+                type='password'
+                placeholder='Enter new password'
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
               />
             </FormControl>
-            <Button variant="primary" type="submit">
+            <Button variant='primary' type='submit'>
               Register
             </Button>
-            <Button variant="outline" onClick={() => navigate("/login")}>
+            <Button variant='outline' onClick={() => navigate('/login')}>
               Have an account? Login here
             </Button>
           </Stack>

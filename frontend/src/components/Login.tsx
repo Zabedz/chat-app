@@ -65,7 +65,7 @@ const Login = () => {
                         <FormControl isRequired>
                             <FormLabel>Username</FormLabel>
                             <Input
-                                type="email"
+                                type="username"
                                 placeholder="Enter your username"
                                 value={userName}
                                 onChange={(e) => setUserName(e.target.value)}

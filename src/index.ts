@@ -5,6 +5,12 @@ import { resolvers } from './resolvers/resolvers';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 
+// CORS configuration
+const corsOptions = {
+  origin: '*',
+  credentials: true,
+};
+
 // MongoDB initialization
 dotenv.config();
 
@@ -23,13 +29,14 @@ mongoose
   .catch((err) => console.error('Error connecting to MongoDB:', err));
 
 // Apollo Server initialization
-const server = new ApolloServer({
+const server: ApolloServer = new ApolloServer({
   typeDefs,
   resolvers,
 });
 
 const main = async () => {
   const { url } = await startStandaloneServer(server);
+  server.applyMiddleware({ cors: corsOptions });
   console.log(`🚀 Server ready at ${url}`);
 };
 
