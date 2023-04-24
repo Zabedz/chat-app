@@ -1,4 +1,4 @@
-import { Schema, model, Document } from 'mongoose';
+import { Document, model, Schema } from 'mongoose';
 
 interface IUser extends Document {
   username: string;
@@ -23,4 +23,4 @@ const userSchema = new Schema<IUser>(
 
 // noinspection TypeScriptValidateTypes
 const User = model<IUser>('User', userSchema);
-export default User;
+export { IUser, User };

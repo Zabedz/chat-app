@@ -1,6 +1,6 @@
 import { PubSub } from 'graphql-subscriptions';
 import { ChatRoom as ChatRoomType, Message as MessageType } from '../types';
-import User from '../models/User';
+import { IUser, User } from '../models/User';
 import ChatRoom from '../models/ChatRoom';
 import Message from '../models/Message';
 import bcrypt from 'bcrypt';
@@ -12,12 +12,32 @@ export const resolvers = {
   Query: {
     messages: async (
       _parent: unknown,
-      { chatRoomId }: { chatRoomId: string }
+      { chatRoomId }: { chatRoomId: string },
     ) => {
+      console.log('Getting messages for chat room: ', chatRoomId);
       return Message.find({ chatRoomId });
     },
     chatRooms: async () => {
+      console.log('Getting chat rooms');
       return ChatRoom.find({});
+    },
+    loginUser: async (
+      _parent: unknown,
+      { username, password }: { username: string; password: string },
+    ): Promise<IUser> => {
+      console.log('Logging in with: ', username, password);
+      const user: IUser | null = await User.findOne({ username });
+      if (!user) {
+        throw new Error('User not found');
+      }
+
+      const isPasswordValid = await bcrypt.compare(password, user.password);
+
+      if (!isPasswordValid) {
+        throw new Error('Invalid password');
+      }
+
+      return user;
     },
   },
   Mutation: {
@@ -27,7 +47,7 @@ export const resolvers = {
         content,
         userId,
         chatRoomId,
-      }: { content: string; userId: string; chatRoomId: string }
+      }: { content: string; userId: string; chatRoomId: string },
     ) => {
       const message = new Message({ content, userId, chatRoomId });
       await message.save();
@@ -41,10 +61,10 @@ export const resolvers = {
     },
     createUser: async (
       _parent: unknown,
-      { username, password }: { username: string; password: string }
+      { username, password }: { username: string; password: string },
     ) => {
       const hashedPassword = await bcrypt.hash(password, 10);
-      const user = new User({ username, password: hashedPassword });
+      const user = new User({ username: username, password: hashedPassword });
       await user.save();
       return user;
     },

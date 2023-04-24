@@ -1,4 +1,3 @@
-// src/schema/schema.ts
 import gql from 'graphql-tag';
 
 export const typeDefs = gql`
@@ -23,6 +22,7 @@ export const typeDefs = gql`
   type Query {
     messages(chatRoomId: ID!): [Message!]
     chatRooms: [ChatRoom!]
+    loginUser(username: String!, password: String!): User!
   }
 
   type Mutation {

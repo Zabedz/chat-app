@@ -1,6 +1,6 @@
 import { gql } from '@apollo/client';
 
-export const GET_CHAT_ROOMS = gql`
+const GET_CHAT_ROOMS = gql`
   query GetChatRooms {
     chatRooms {
       id
@@ -8,3 +8,14 @@ export const GET_CHAT_ROOMS = gql`
     }
   }
 `;
+
+const LOGIN_USER = gql`
+  query LoginUser($username: String!, $password: String!) {
+    loginUser(username: $username, password: $password) {
+      id
+      username
+    }
+  }
+`;
+
+export { GET_CHAT_ROOMS, LOGIN_USER };

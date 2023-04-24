@@ -1,15 +1,20 @@
-import React, {createContext, useContext, useState} from "react";
+import React, { createContext, useContext, useState } from 'react';
+
+type User = {
+    id: string;
+    username: string;
+};
 
 type AuthContextType = {
-    isLoggedIn: boolean;
-    setLoggedIn: (loggedIn: boolean) => void;
+    user: User | null;
+    setUser: (user: User | null) => void;
     authenticated: boolean;
 };
 
 export const AuthContext = createContext<AuthContextType>({
     authenticated: false,
-    isLoggedIn: false,
-    setLoggedIn: () => {}
+    user: null,
+    setUser: () => {},
 });
 
 type AuthProviderProps = {
@@ -17,17 +22,16 @@ type AuthProviderProps = {
 };
 
 export function AuthProvider({ children }: AuthProviderProps) {
-    const [isLoggedIn, setLoggedIn] = useState(false);
+    const [user, setUser] = useState<User | null>(null);
 
     return (
-        <AuthContext.Provider
-            value={{ isLoggedIn, setLoggedIn, authenticated: isLoggedIn }}
-        >
-            {children}
-        </AuthContext.Provider>
+      <AuthContext.Provider
+        value={{ user, setUser, authenticated: user !== null }}
+      >
+          {children}
+      </AuthContext.Provider>
     );
 }
-
 
 export const useAuth = () => {
     const context = useContext(AuthContext);

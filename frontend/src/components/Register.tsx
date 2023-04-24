@@ -1,29 +1,42 @@
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Box, Button, FormControl, FormLabel, Heading, Input, Stack, useColorModeValue } from '@chakra-ui/react';
+import {
+  Box,
+  Button,
+  FormControl,
+  FormLabel,
+  Heading,
+  Input,
+  Stack,
+  useColorModeValue,
+  useToast,
+} from '@chakra-ui/react';
 import { motion } from 'framer-motion';
 import { css } from '@emotion/react';
 import { useMutation } from '@apollo/client';
-import gql from 'graphql-tag';
-import { useToast } from "@chakra-ui/react";
-
-const CREATE_USER = gql`
-  mutation CreateUser($username: String!, $password: String!) {
-    createUser(username: $username, password: $password) {
-      id
-      username
-    }
-  }
-`;
+import { CREATE_USER } from './graphql/mutations';
+import { AuthContext } from '../context/auth';
 
 const Register = () => {
+  // Context hooks
   const navigate = useNavigate();
   const toast = useToast();
+
+  // States
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
 
-  const [createUser] = useMutation(CREATE_USER);
+  // Auth
+  const { setUser } = useContext(AuthContext);
+  const [createUser] = useMutation(CREATE_USER, {
+    onCompleted: (data) => {
+      setUser(data.createUser); // Set the user in the context after successful registration
+    },
+    onError: (err) => {
+      setError('Error creating user');
+    },
+  });
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -32,21 +45,21 @@ const Register = () => {
       await createUser({
         variables: {
           username,
-          password
-        }
+          password,
+        },
       });
 
       toast({
-        title: "Registration successful",
-        description: "You have successfully registered. Redirecting...",
-        status: "success",
-        duration: 5000,
+        title: 'Registration successful',
+        description: 'You have successfully registered. Redirecting...',
+        status: 'success',
+        duration: 3000,
         isClosable: true,
       });
 
       setTimeout(() => {
-        navigate("/");
-      }, 5000);
+        navigate('/'); // Navigate to the Home page
+      }, 3000);
     } catch (err) {
       setError('Error creating user');
     }
