@@ -1,17 +1,26 @@
 import React from 'react';
 import { Box, VStack, Text } from '@chakra-ui/react';
+import { useQuery } from '@apollo/client';
+import { GET_USERS } from './graphql/queries';
 
 type User = {
-  id: number;
+  id: string;
   username: string;
 };
 
 type UserListProps = {
-  users: User[];
+  loggedInUserId?: string;
   onUserSelect: (user: User) => void;
 };
 
-const UserList: React.FC<UserListProps> = ({ users, onUserSelect }) => {
+const UserList: React.FC<UserListProps> = ({ loggedInUserId, onUserSelect }) => {
+  const { loading, error, data } = useQuery(GET_USERS);
+
+  if (loading) return <Text>Loading...</Text>;
+  if (error) return <Text>Error: {error.message}</Text>;
+
+  const users = data.users.filter((user: User) => user.id !== loggedInUserId);
+
   return (
     <VStack
       minWidth="300px" // Set the minimum width for the user list
@@ -21,7 +30,7 @@ const UserList: React.FC<UserListProps> = ({ users, onUserSelect }) => {
       borderColor="gray.200"
       overflowY="auto" // Enable scrolling when needed
     >
-      {users.map((user) => (
+      {users.map((user: User) => (
         <Box
           key={user.id}
           onClick={() => onUserSelect(user)}

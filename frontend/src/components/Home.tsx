@@ -1,21 +1,19 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Flex } from '@chakra-ui/react';
 import UserList from './UserList';
 import ChatBox from './ChatBox';
+import { useAuth } from '../context/auth';
+import { useNavigate } from 'react-router-dom';
 
 type User = {
-  id: number;
+  id: string;
   username: string;
 };
 
-const users: User[] = [
-  // Dummy data for now
-  { id: 1, username: 'User 1' },
-  { id: 2, username: 'User 2' },
-  { id: 3, username: 'User 3' },
-];
-
 const Home: React.FC = () => {
+  const navigate = useNavigate();
+  const { user } = useAuth();
+
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
 
   const handleUserSelection = (user: User) => {
@@ -26,15 +24,21 @@ const Home: React.FC = () => {
     setSelectedUser(null);
   };
 
+  useEffect(() => {
+    if (!user) {
+      navigate('/login');
+    }
+  }, [user, navigate]);
+
   return (
     <Flex
-      minHeight="100vh"
-      padding="2rem"
-      flexDirection="row"
-      justifyContent="flex-start"
-      alignItems="flex-start"
+      minHeight='100vh'
+      padding='2rem'
+      flexDirection='row'
+      justifyContent='flex-start'
+      alignItems='flex-start'
     >
-      <UserList users={users} onUserSelect={handleUserSelection} />
+      <UserList loggedInUserId={user?.id} onUserSelect={handleUserSelection} />
       {selectedUser && (
         <ChatBox user={selectedUser} onCloseChat={handleCloseChat} />
       )}

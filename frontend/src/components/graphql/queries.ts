@@ -18,4 +18,13 @@ const LOGIN_USER = gql`
   }
 `;
 
-export { GET_CHAT_ROOMS, LOGIN_USER };
+const GET_USERS = gql`
+  query GetUsers {
+    users {
+      id
+      username
+    }
+  }
+`;
+
+export { GET_CHAT_ROOMS, LOGIN_USER, GET_USERS };

@@ -2,7 +2,7 @@ import { Document, model, Schema } from 'mongoose';
 
 interface IUser extends Document {
   username: string;
-  password: string; // Add this line for the password field
+  password: string;
 }
 
 const userSchema = new Schema<IUser>(

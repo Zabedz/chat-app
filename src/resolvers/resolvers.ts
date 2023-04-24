@@ -39,6 +39,9 @@ export const resolvers = {
 
       return user;
     },
+    users: async () => {
+      return User.find();
+    },
   },
   Mutation: {
     createMessage: async (

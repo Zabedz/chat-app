@@ -23,6 +23,7 @@ export const typeDefs = gql`
     messages(chatRoomId: ID!): [Message!]
     chatRooms: [ChatRoom!]
     loginUser(username: String!, password: String!): User!
+    users: [User!]
   }
 
   type Mutation {
